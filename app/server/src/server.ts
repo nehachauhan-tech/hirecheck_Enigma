@@ -7,11 +7,11 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Middleware
+ 
 app.use(cors());
 app.use(express.json());
 
-// Health Check Route
+ 
 app.get("/api/health", (req, res) => {
   res.status(200).json({
     success: true,
@@ -19,12 +19,12 @@ app.get("/api/health", (req, res) => {
   });
 });
 
-// Base Route
+ 
 app.get("/", (req, res) => {
   res.send("HireCheck Backend API");
 });
 
-// 404 Handler
+ 
 app.use((req, res) => {
   res.status(404).json({
     success: false,
@@ -32,7 +32,7 @@ app.use((req, res) => {
   });
 });
 
-// Start Server
+ 
 app.listen(PORT, () => {
   console.log(`🔥 Server running on http://localhost:${PORT}`);
 });
