@@ -8,8 +8,8 @@
     "dev:server": "tsx watch server/src/server.ts",
     "dev:all": "concurrently \"npm run dev\" \"npm run dev:server\"",
     "build": "tsc -b && vite build",
-    "build:server": "cd server && npx tsc -p tsconfig.json",
-    "start:server": "node dist/server/src/server.js",
+    "build:server": "echo 'No build step needed - using tsx'",
+    "start:server": "npx tsx server/src/server.ts",
     "lint": "eslint .",
     "preview": "vite preview"
   },

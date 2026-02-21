@@ -3,7 +3,7 @@ services:
     name: hirecheck-backend
     runtime: node
     rootDir: app
-    buildCommand: npm install && npm run build:server
+    buildCommand: npm install
     startCommand: npm run start:server
     envVars:
       - key: NODE_ENV
@@ -11,13 +11,13 @@ services:
       - key: PORT
         value: 3001
       - key: MONGODB_URI
-        sync: false   # Set this manually in Render dashboard
+        sync: false
       - key: JWT_SECRET
-        sync: false   # Set this manually in Render dashboard
+        sync: false
       - key: GROQ_API_KEY
-        sync: false   # Set this manually in Render dashboard
+        sync: false
       - key: CLIENT_URL
-        sync: false   # Set to your Vercel frontend URL
+        sync: false
       - key: JUDGE0_API
         sync: false
       - key: JUDGE0_KEY
