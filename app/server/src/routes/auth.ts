@@ -52,28 +52,16 @@ router.post('/register', registerLimiter, async (req, res) => {
       return res.status(400).json({ error: pwError });
     }
 
-    // Check if user exists
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(400).json({ error: 'User already exists' });
-    }
-
-    // 2. Password strength validation
-    const passwordError = validatePassword(password || '');
-    if (passwordError) {
-      return res.status(400).json({ error: passwordError });
-    }
-
-    // 3. Check if user already exists
+    // Check if user already exists
     const existingUser = await User.findOne({ email: email.toLowerCase().trim() });
     if (existingUser) {
       return res.status(400).json({ error: 'An account with this email already exists.' });
     }
 
-    // 4. Hash password (bcrypt, 12 rounds for stronger security)
+    // Hash password (bcrypt, 12 rounds for stronger security)
     const hashedPassword = await bcrypt.hash(password, 12);
 
-    // 5. Create user
+    // Create user
     const user = new User({
       email: email.toLowerCase().trim(),
       password: hashedPassword,
@@ -82,7 +70,7 @@ router.post('/register', registerLimiter, async (req, res) => {
 
     await user.save();
 
-    // 6. Generate token
+    // Generate token
     const token = jwt.sign(
       { userId: user._id, email: user.email },
       process.env.JWT_SECRET!,
