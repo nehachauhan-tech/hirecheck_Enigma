@@ -118,18 +118,21 @@ export class AIAdapter {
     const userPrompt = this.buildActorUserPrompt(context, decision);
 
     try {
+      console.log(`[AIAdapter] Calling Groq for ${persona.name} (Decision: ${decision.probe.type})...`);
       if (this.groq) {
         const response = await this.generateGroqResponse(systemPrompt, userPrompt);
+        console.log(`[AIAdapter] Groq responded successfully for ${persona.name}`);
         // Add Decision Trace to the response (Step 8 of User Request)
         if (collabNote) response.message = `${collabNote}\n\n${response.message}`;
-        // REMOVED Trace from user-facing message
-        // response.message += `\n\n[Decision Trace]:\n${decision.verdictTrace.join('\n')}`;
         response.probingStage = decision.probe.stage;
         return response;
       }
       throw new Error('Groq provider not available');
-    } catch (error) {
-      console.error('AI provider failed:', error);
+    } catch (error: any) {
+      console.error(`[AIAdapter] Groq failed: ${error.message || error}`);
+      if (error.status === 429) {
+        console.error('[AIAdapter] RATE LIMIT EXCEEDED. Returning fallback.');
+      }
       return this.getFallbackResponse(context.state, persona);
     }
   }
