@@ -1,6 +1,4 @@
-@import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
-
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap");
 @import "tailwindcss";
 
 @layer base {
@@ -41,10 +39,10 @@
     color: hsl(var(--foreground));
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    font-family: 'Inter', sans-serif;
-    background-color: #07080A;
+    font-family: "Inter", sans-serif;
+    background-color: #07080a;
     color: hsl(var(--foreground));
-    font-family: 'Inter', sans-serif;
+    font-family: "Inter", sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
@@ -55,29 +53,28 @@
   h4,
   h5,
   h6 {
-    font-family: 'Space Grotesk', sans-serif;
+    font-family: "Space Grotesk", sans-serif;
   }
 }
 
-
 @layer utilities {
   .font-display {
-    font-family: 'Space Grotesk', sans-serif;
+    font-family: "Space Grotesk", sans-serif;
   }
 
   .font-body {
-    font-family: 'Inter', sans-serif;
+    font-family: "Inter", sans-serif;
   }
 
   .text-gradient {
     background-clip: text;
     -webkit-background-clip: text;
     color: transparent;
-    background-image: linear-gradient(135deg, #30D8A8 0%, #20B894 100%);
+    background-image: linear-gradient(135deg, #30d8a8 0%, #20b894 100%);
   }
 
   .bg-clinical {
-    background-color: #07080A;
+    background-color: #07080a;
   }
 
   .border-clinical {
@@ -97,7 +94,7 @@
   }
 
   .noise-overlay::after {
-    content: '';
+    content: "";
     position: absolute;
     inset: 0;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
@@ -147,8 +144,8 @@
   .btn-primary {
     padding: 0.75rem 1.5rem;
     border-radius: 9999px;
-    background-image: linear-gradient(to right, #30D8A8, #20B894);
-    color: #07080A;
+    background-image: linear-gradient(to right, #30d8a8, #20b894);
+    color: #07080a;
     font-weight: 700;
     transition: all 0.3s;
     box-shadow: 0 0 20px rgba(48, 216, 168, 0.2);
@@ -187,7 +184,7 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: #07080A;
+  background: #07080a;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -208,7 +205,6 @@
 
 /* Animation utilities */
 @keyframes pulse-glow {
-
   0%,
   100% {
     box-shadow: 0 0 20px rgba(48, 216, 168, 0.2);
@@ -224,7 +220,6 @@
 }
 
 @keyframes float {
-
   0%,
   100% {
     transform: translateY(0);
@@ -255,7 +250,7 @@
   appearance: none;
   width: 16px;
   height: 16px;
-  background: #30D8A8;
+  background: #30d8a8;
   border-radius: 50%;
   cursor: pointer;
   box-shadow: 0 0 10px rgba(48, 216, 168, 0.5);
@@ -264,7 +259,7 @@
 .timeline-slider::-moz-range-thumb {
   width: 16px;
   height: 16px;
-  background: #30D8A8;
+  background: #30d8a8;
   border-radius: 50%;
   cursor: pointer;
   border: none;
