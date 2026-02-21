@@ -17,7 +17,7 @@ import diagRoutes from "./routes/diag";
 
 import path from "path";
 
-dotenv.config({ path: path.join(process.cwd(), "server", ".env") });
+dotenv.config({ path: path.join(__dirname, "..", ".env") });
 
 const app = express();
 const httpServer = createServer(app);

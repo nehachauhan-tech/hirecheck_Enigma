@@ -2,9 +2,9 @@ services:
   - type: web
     name: hirecheck-backend
     runtime: node
-    rootDir: app
+    rootDir: server
     buildCommand: npm install
-    startCommand: npm run start:server
+    startCommand: npm run start
     envVars:
       - key: NODE_ENV
         value: production
