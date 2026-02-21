@@ -4,61 +4,58 @@ import jwt from 'jsonwebtoken';
 import rateLimit from 'express-rate-limit';
 import User from '../models/User';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
-
 const router = express.Router();
 
-// ─── Rate Limiters ───────────────────────────────────────────────────────────
-
-// Login: max 5 attempts per 15 minutes per IP
+// Login: block IP after 100 failed attempts in 15 minutes (increased for testing)
 const loginLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 5,
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100,
   message: { error: 'Too many login attempts. Please try again in 15 minutes.' },
   standardHeaders: true,
   legacyHeaders: false,
 });
 
-// Register: max 3 accounts per hour per IP
+// Register: max 50 accounts per IP per hour (increased for testing)
 const registerLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000,
-  max: 3,
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 50,
   message: { error: 'Too many accounts created from this IP. Please try again later.' },
   standardHeaders: true,
   legacyHeaders: false,
 });
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
+// ─── Validation Helpers ───────────────────────────────────────────────────────
 
-function validateEmail(email: string): boolean {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email);
-}
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function validatePassword(password: string): string | null {
-  if (password.length < 8) {
-    return 'Password must be at least 8 characters long.';
-  }
-  if (!/[A-Z]/.test(password)) {
-    return 'Password must contain at least one uppercase letter.';
-  }
-  if (!/[0-9]/.test(password)) {
-    return 'Password must contain at least one number.';
-  }
+  if (password.length < 8) return 'Password must be at least 8 characters.';
+  if (!/[0-9]/.test(password)) return 'Password must contain at least 1 number.';
+  if (!/[A-Z]/.test(password)) return 'Password must contain at least 1 uppercase letter.';
   return null; // valid
 }
 
-const LOCK_DURATION_MS = 15 * 60 * 1000; // 15 minutes
-const MAX_FAILED_ATTEMPTS = 5;
-
-// ─── Register ────────────────────────────────────────────────────────────────
+// ─── Register ─────────────────────────────────────────────────────────────────
 
 router.post('/register', registerLimiter, async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // 1. Email format validation
-    if (!email || !validateEmail(email)) {
-      return res.status(400).json({ error: 'Please provide a valid email address.' });
+    // Validate email format
+    if (!EMAIL_REGEX.test(email)) {
+      return res.status(400).json({ error: 'Invalid email format.' });
+    }
+
+    // Validate password strength
+    const pwError = validatePassword(password);
+    if (pwError) {
+      return res.status(400).json({ error: pwError });
+    }
+
+    // Check if user exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ error: 'User already exists' });
     }
 
     // 2. Password strength validation
@@ -107,7 +104,10 @@ router.post('/register', registerLimiter, async (req, res) => {
   }
 });
 
-// ─── Login ───────────────────────────────────────────────────────────────────
+// ─── Login ────────────────────────────────────────────────────────────────────
+
+const MAX_FAILED_ATTEMPTS = 5;
+const LOCK_DURATION_MS = 15 * 60 * 1000; // 15 minutes
 
 router.post('/login', loginLimiter, async (req, res) => {
   try {
@@ -123,43 +123,38 @@ router.post('/login', loginLimiter, async (req, res) => {
       return res.status(401).json({ error: 'Invalid credentials.' });
     }
 
-    // 2. Check account lockout
+    // Check account lockout
     if (user.isLocked()) {
-      const minutesLeft = Math.ceil((user.lockUntil!.getTime() - Date.now()) / 60000);
-      return res.status(423).json({
-        error: `Account is temporarily locked due to too many failed attempts. Try again in ${minutesLeft} minute(s).`
+      const remainingMs = user.lockUntil!.getTime() - Date.now();
+      const remainingMins = Math.ceil(remainingMs / 60000);
+      return res.status(403).json({
+        error: `Account is locked due to too many failed attempts. Try again in ${remainingMins} minute(s).`
       });
     }
 
-    // 3. Verify password
+    // Verify password
     const isValid = await bcrypt.compare(password, user.password);
 
     if (!isValid) {
       // Increment failed attempts
-      user.failedLoginAttempts = (user.failedLoginAttempts || 0) + 1;
+      const attempts = (user.failedLoginAttempts || 0) + 1;
+      const update: Record<string, unknown> = { failedLoginAttempts: attempts };
 
-      if (user.failedLoginAttempts >= MAX_FAILED_ATTEMPTS) {
-        // Lock the account
-        user.lockUntil = new Date(Date.now() + LOCK_DURATION_MS);
-        await user.save();
-        return res.status(423).json({
-          error: `Too many failed attempts. Your account has been locked for 15 minutes.`
-        });
+      if (attempts >= MAX_FAILED_ATTEMPTS) {
+        update.lockUntil = new Date(Date.now() + LOCK_DURATION_MS);
       }
 
-      const attemptsLeft = MAX_FAILED_ATTEMPTS - user.failedLoginAttempts;
-      await user.save();
-      return res.status(401).json({
-        error: `Invalid credentials. ${attemptsLeft} attempt(s) remaining before lockout.`
-      });
+      await User.findByIdAndUpdate(user._id, update);
+      return res.status(401).json({ error: 'Invalid credentials' });
     }
 
-    // 4. Successful login — reset lockout counters
-    user.failedLoginAttempts = 0;
-    user.lockUntil = null;
-    await user.save();
+    // Successful login — reset lockout counters
+    await User.findByIdAndUpdate(user._id, {
+      failedLoginAttempts: 0,
+      lockUntil: null
+    });
 
-    // 5. Generate token
+    // Generate token
     const token = jwt.sign(
       { userId: user._id, email: user.email },
       process.env.JWT_SECRET!,
@@ -181,7 +176,7 @@ router.post('/login', loginLimiter, async (req, res) => {
   }
 });
 
-// ─── Get current user ────────────────────────────────────────────────────────
+// ─── Get current user ─────────────────────────────────────────────────────────
 
 router.get('/me', authMiddleware, async (req: AuthRequest, res: Response) => {
   try {
@@ -202,7 +197,7 @@ router.get('/me', authMiddleware, async (req: AuthRequest, res: Response) => {
   }
 });
 
-// ─── Update plan ─────────────────────────────────────────────────────────────
+// ─── Update plan ──────────────────────────────────────────────────────────────
 
 router.patch('/plan', authMiddleware, async (req: AuthRequest, res: Response) => {
   try {

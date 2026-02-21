@@ -10,12 +10,10 @@ export interface IUser extends Document {
     averageScore: number;
     streakDays: number;
   };
-  // Security fields
   failedLoginAttempts: number;
   lockUntil: Date | null;
   createdAt: Date;
   updatedAt: Date;
-  // Helper method
   isLocked(): boolean;
 }
 
@@ -29,15 +27,13 @@ const UserSchema = new Schema<IUser>({
     averageScore: { type: Number, default: 0 },
     streakDays: { type: Number, default: 0 }
   },
-  // Account lockout
   failedLoginAttempts: { type: Number, default: 0 },
   lockUntil: { type: Date, default: null }
 }, { timestamps: true });
 
-// Helper: is the account currently locked?
+// Returns true if the account is currently locked
 UserSchema.methods.isLocked = function (): boolean {
-  if (!this.lockUntil) return false;
-  return this.lockUntil.getTime() > Date.now();
+  return !!(this.lockUntil && this.lockUntil > new Date());
 };
 
 export default mongoose.model<IUser>('User', UserSchema);

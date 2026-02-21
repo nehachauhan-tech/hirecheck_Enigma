@@ -1,28 +1,7 @@
 @import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
 
-@theme {
-  --color-background: hsl(220 20% 3%);
-  --color-foreground: hsl(0 0% 98%);
-  --color-card: hsl(220 15% 6%);
-  --color-card-foreground: hsl(0 0% 98%);
-  --color-popover: hsl(220 15% 6%);
-  --color-popover-foreground: hsl(0 0% 98%);
-  --color-primary: hsl(158 68% 52%);
-  --color-primary-foreground: hsl(220 20% 3%);
-  --color-secondary: hsl(220 10% 12%);
-  --color-secondary-foreground: hsl(0 0% 98%);
-  --color-muted: hsl(220 10% 15%);
-  --color-muted-foreground: hsl(220 10% 60%);
-  --color-accent: hsl(158 68% 52%);
-  --color-accent-foreground: hsl(220 20% 3%);
-  --color-destructive: hsl(0 84% 60%);
-  --color-destructive-foreground: hsl(0 0% 98%);
-  --color-border: hsl(220 10% 18%);
-  --color-input: hsl(220 10% 15%);
-  --color-ring: hsl(158 68% 52%);
-  --radius: 1.375rem;
-}
+@import "tailwindcss";
 
 @layer base {
   :root {
@@ -58,6 +37,11 @@
   }
 
   body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-family: 'Inter', sans-serif;
     background-color: #07080A;
     color: hsl(var(--foreground));
     font-family: 'Inter', sans-serif;
@@ -86,7 +70,9 @@
   }
 
   .text-gradient {
-    @apply bg-clip-text text-transparent;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
     background-image: linear-gradient(135deg, #30D8A8 0%, #20B894 100%);
   }
 
@@ -121,22 +107,37 @@
   }
 
   .card-clinical {
-    @apply rounded-[22px] border border-white/10 bg-white/[0.03] backdrop-blur-xl;
+    border-radius: 22px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background-color: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
     position: relative;
     overflow: hidden;
   }
 
   .glass {
-    @apply bg-white/[0.03] backdrop-blur-xl border border-white/10;
+    background-color: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
   }
 
   .glass-dark {
-    @apply bg-black/40 backdrop-blur-2xl border border-white/5;
+    background-color: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
   }
 
   .card-clinical-hover {
-    @apply transition-all duration-500 hover:border-[#30D8A8]/30 hover:bg-white/[0.06];
+    transition: all 0.5s;
+  }
+
+  .card-clinical-hover:hover {
+    border-color: rgba(48, 216, 168, 0.3);
+    background-color: rgba(255, 255, 255, 0.06);
   }
 
   .card-clinical-hover:hover {
@@ -144,16 +145,30 @@
   }
 
   .btn-primary {
-    @apply px-6 py-3 rounded-full bg-gradient-to-r from-[#30D8A8] to-[#20B894] text-[#07080A] font-bold transition-all duration-300;
+    padding: 0.75rem 1.5rem;
+    border-radius: 9999px;
+    background-image: linear-gradient(to right, #30D8A8, #20B894);
+    color: #07080A;
+    font-weight: 700;
+    transition: all 0.3s;
     box-shadow: 0 0 20px rgba(48, 216, 168, 0.2);
   }
 
   .btn-primary:active {
-    @apply scale-95 opacity-90;
+    transform: scale(0.95);
+    opacity: 0.9;
   }
 
   .btn-secondary {
-    @apply px-6 py-3 rounded-full border border-white/10 bg-white/5 text-white font-medium transition-all duration-300 backdrop-blur-md;
+    padding: 0.75rem 1.5rem;
+    border-radius: 9999px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background-color: rgba(255, 255, 255, 0.05);
+    color: white;
+    font-weight: 500;
+    transition: all 0.3s;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
   }
 
   .scroll-snap-y {
