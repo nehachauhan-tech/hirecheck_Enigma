@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Socket } from 'socket.io-client';
+import { API_URL } from '../lib/constants';
 import Editor from '@monaco-editor/react';
 import {
   Play,
@@ -121,7 +122,7 @@ export default function InterviewRoom({ session, socket, token, onEnd }: Intervi
         speak(lastMsg.content, session.interviewerPersona);
       }
     }
-import { API_URL } from '../lib/constants';
+  }, [messages, voiceEnabled, speak, session.interviewerPersona]);
 
 // Fetch problem details
   useEffect(() => {
