@@ -11,6 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
+import { API_URL } from "../lib/constants";
 
 interface ResumeUploadDialogProps {
   token: string;
@@ -26,7 +27,7 @@ export function ResumeUploadDialog({ token }: ResumeUploadDialogProps) {
   useEffect(() => {
     if (open && token) {
       setLoading(true);
-      fetch("http://localhost:3001/api/stats/resume", {
+      fetch(`${API_URL}/api/stats/resume`, {
         headers: { Authorization: `Bearer ${token}` },
       })
         .then((res) => res.json())
@@ -40,7 +41,7 @@ export function ResumeUploadDialog({ token }: ResumeUploadDialogProps) {
   const handleSave = async () => {
     setSaving(true);
     try {
-      const res = await fetch("http://localhost:3001/api/stats/resume", {
+      const res = await fetch(`${API_URL}/api/stats/resume`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

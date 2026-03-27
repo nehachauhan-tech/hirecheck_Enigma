@@ -121,11 +121,9 @@ export default function InterviewRoom({ session, socket, token, onEnd }: Intervi
         speak(lastMsg.content, session.interviewerPersona);
       }
     }
-  }, [messages, voiceEnabled, session.interviewerPersona, speak]);
+import { API_URL } from '../lib/constants';
 
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
-
-  // Fetch problem details
+// Fetch problem details
   useEffect(() => {
     const fetchProblem = async () => {
       try {

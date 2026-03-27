@@ -9,6 +9,7 @@ import {
   AreaChart,
   Area,
 } from "recharts";
+import { API_URL } from "../lib/constants";
 import {
   ArrowLeft,
   TrendingUp,
@@ -67,8 +68,6 @@ const ProgressAnalytics: React.FC<ProgressAnalyticsProps> = ({
   const [skills, setSkills] = useState<Skill[]>([]);
   const [overview, setOverview] = useState<Overview | null>(null);
   const [loading, setLoading] = useState(true);
-
-  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
 
   useEffect(() => {
     const fetchData = async () => {

@@ -16,6 +16,7 @@ import {
   Target,
   Star
 } from 'lucide-react';
+import { API_URL } from '../lib/constants';
 import type { User } from '../types';
 import { ResumeUploadDialog } from '../components/ResumeUploadDialog';
 import SkillRadar from '../components/SkillRadar';
@@ -65,8 +66,6 @@ export default function Dashboard({ user, token, onStartInterview, onLogout, onB
     badge: 'Daily Streak',
     id: ''
   });
-
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
   useEffect(() => {
     const fetchStats = async () => {

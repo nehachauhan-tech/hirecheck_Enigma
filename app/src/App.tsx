@@ -1,4 +1,4 @@
- import { useState, useEffect, type ReactNode } from 'react';
+ import React, { useState, useEffect, type ReactNode } from 'react';
 import { io, Socket } from 'socket.io-client';
 import LandingPage from './sections/LandingPage';
 import Dashboard from './sections/Dashboard';
@@ -10,10 +10,8 @@ import CompanyCompass from './sections/CompanyCompass';
 import ProgressAnalytics from './sections/ProgressAnalytics';
 import AuthModal from './components/AuthModal';
 import { AlertCircle } from 'lucide-react';
+import { API_URL } from './lib/constants';
 import type { User, Session, Verdict } from './types/index';
-import React from 'react';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
 interface PendingInterviewData {
   problemId: string;

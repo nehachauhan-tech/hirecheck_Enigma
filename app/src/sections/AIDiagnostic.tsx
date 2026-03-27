@@ -4,6 +4,7 @@ import { Card } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '../components/ui/alert';
 import { Activity, CheckCircle, XCircle } from 'lucide-react';
+import { API_URL } from '../lib/constants';
 
 interface AIDiagnosticProps {
     token: string | null;
@@ -15,8 +16,6 @@ const AIDiagnostic: React.FC<AIDiagnosticProps> = ({ token, onBack }) => {
         groq?: { status: string; message: string };
         loading: boolean;
     }>({ loading: false });
-
-    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
     const runTest = async () => {
         if (!token) {

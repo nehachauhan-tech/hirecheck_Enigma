@@ -8,6 +8,7 @@ import {
     Target,
     TrendingUp
 } from 'lucide-react';
+import { API_URL } from '../lib/constants';
 
 interface AuditResult {
     score: number;
@@ -28,8 +29,6 @@ const ResumeAuditor: React.FC<ResumeAuditorProps> = ({ token, company, role, onC
     const [audit, setAudit] = useState<AuditResult | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-
-    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
     useEffect(() => {
         performAudit();
